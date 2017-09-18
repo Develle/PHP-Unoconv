@@ -11,12 +11,12 @@
 
 namespace Unoconv;
 
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 class UnoconvServiceProvider implements ServiceProviderInterface
 {
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app['unoconv.default.configuration'] = array(
             'unoconv.binaries' => array('unoconv'),
@@ -25,7 +25,7 @@ class UnoconvServiceProvider implements ServiceProviderInterface
         $app['unoconv.configuration'] = array();
         $app['unoconv.logger'] = null;
 
-        $app['unoconv'] = $app->share(function(Application $app) {
+        $app['unoconv'] = $app->protect(function ($name) use ($app) {
             $app['unoconv.configuration'] = array_replace(
                 $app['unoconv.default.configuration'], $app['unoconv.configuration']
             );
